@@ -1,0 +1,87 @@
+aid: qualys
+name: Qualys
+description: >-
+  Qualys is a cloud-based security and compliance platform offering
+  Vulnerability Management Detection and Response (VMDR), Policy Compliance,
+  Web Application Scanning, Container Security, EDR, and Cloud Security
+  Posture Management. The Qualys API framework exposes XML and JSON REST
+  endpoints across platform pods (qualysapi.qualys.com, qualysapi.qg2.apps.qualys.com,
+  etc.) for managing scans, assets, vulnerabilities, reports, and findings.
+  Authentication supports HTTP Basic auth and JWT bearer tokens via the
+  Qualys Authentication API.
+type: Index
+image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+tags:
+  - Security
+  - Vulnerability Management
+  - Compliance
+  - VMDR
+  - Cloud Security
+  - Web Application Scanning
+url: >-
+  https://raw.githubusercontent.com/api-evangelist/qualys/refs/heads/main/apis.yml
+created: '2026-05-11'
+modified: '2026-05-11'
+specificationVersion: '0.19'
+apis:
+  - aid: qualys:vmdr-api
+    name: Qualys VMDR API
+    description: >-
+      REST/XML API for managing the full Vulnerability Management Detection
+      and Response lifecycle including asset inventory, scans, vulnerability
+      findings, prioritization, and reports. Base URL varies per pod (US
+      Platform 1 uses qualysapi.qualys.com); authentication is HTTP Basic
+      with Qualys account credentials.
+    humanURL: https://docs.qualys.com/en/vm/api/
+    baseURL: https://qualysapi.qualys.com
+    tags:
+      - Vulnerability Management
+      - Asset Inventory
+      - Scans
+      - Reports
+    properties:
+      - type: Documentation
+        url: https://docs.qualys.com/en/vm/api/
+      - type: API Quick Reference
+        url: https://cdn2.qualys.com/docs/qualys-api-quick-reference.pdf
+      - type: User Guide
+        url: https://cdn2.qualys.com/docs/qualys-api-vmpc-user-guide.pdf
+      - type: Pod URLs
+        url: https://www.qualys.com/platform-identification/
+  - aid: qualys:authentication-api
+    name: Qualys Authentication API
+    description: >-
+      Authentication endpoint that issues JSON Web Tokens (JWT) used as
+      Bearer credentials for newer Qualys APIs (VMDR OT, CSAM, TotalCloud).
+      Clients post username and password to /auth and pass the returned
+      token in the Authorization header on subsequent requests.
+    humanURL: https://docs.qualys.com/en/vmdr-ot/api/vmdrot_api/ch01/get_started.htm
+    baseURL: https://gateway.qg1.apps.qualys.com
+    tags:
+      - Authentication
+      - JWT
+      - Identity
+    properties:
+      - type: Documentation
+        url: https://docs.qualys.com/en/vmdr-ot/api/vmdrot_api/ch01/get_started.htm
+
+common:
+  - type: Website
+    url: https://www.qualys.com
+  - type: Documentation
+    url: https://docs.qualys.com
+  - type: API Framework
+    url: https://docs.qualys.com/en/vmdr-mobile/api/get_started/qualys_api_framework.htm
+  - type: Free Trial
+    url: https://www.qualys.com/free-trial/
+  - type: Pricing
+    url: https://www.qualys.com/forms/contact-us/
+  - type: Community
+    url: https://success.qualys.com/discussions/s/
+  - type: Support
+    url: https://www.qualys.com/support/
+  - type: Status
+    url: https://status.qualys.com
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com
