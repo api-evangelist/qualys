@@ -80,7 +80,7 @@ common:
     url: https://success.qualys.com/discussions/s/
   - type: Support
     url: https://www.qualys.com/support/
-  - type: Status
+  - type: StatusPage
     url: https://status.qualys.com
 maintainers:
   - FN: Kin Lane
