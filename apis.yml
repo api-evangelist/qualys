@@ -66,6 +66,10 @@ apis:
         url: https://docs.qualys.com/en/vmdr-ot/api/vmdrot_api/ch01/get_started.htm
 
 common:
+  - type: GitHubOrganization
+    url: https://github.com/qualys
+  - type: LinkedIn
+    url: https://www.linkedin.com/company/qualys
   - type: Website
     url: https://www.qualys.com
   - type: Documentation
