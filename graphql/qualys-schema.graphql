@@ -1,0 +1,1024 @@
+# Qualys GraphQL Schema
+# Conceptual schema modeling the Qualys cloud security platform REST API surface.
+# Covers VMDR, Policy Compliance, WAS, Container Security, Certificate View,
+# Cloud Agent, CSPM, and platform access control.
+
+scalar DateTime
+scalar JSON
+
+# ---------------------------------------------------------------------------
+# Enumerations
+# ---------------------------------------------------------------------------
+
+enum ScanStatusEnum {
+  RUNNING
+  FINISHED
+  PAUSED
+  CANCELLED
+  QUEUED
+  ERROR
+  LOADING
+}
+
+enum ScanTypeEnum {
+  VULNERABILITY
+  COMPLIANCE
+  DISCOVERY
+  WEB_APPLICATION
+  CONTAINER
+}
+
+enum SeverityLevel {
+  MINIMAL
+  MEDIUM
+  SERIOUS
+  CRITICAL
+  URGENT
+}
+
+enum RiskLevel {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum ScannerTypeEnum {
+  PHYSICAL
+  VIRTUAL
+  INTERNAL
+  EXTERNAL
+  CLOUD
+}
+
+enum ComplianceStatusEnum {
+  PASSED
+  FAILED
+  ERROR
+  EXCEPTION
+  NOT_EVALUATED
+}
+
+enum AgentStatusEnum {
+  ACTIVE
+  INACTIVE
+  DISABLED
+  PENDING
+}
+
+enum ContainerStatusEnum {
+  RUNNING
+  STOPPED
+  PAUSED
+  EXITED
+}
+
+enum CertificateStatusEnum {
+  VALID
+  EXPIRED
+  REVOKED
+  EXPIRING_SOON
+  UNKNOWN
+}
+
+enum CloudProviderEnum {
+  AWS
+  AZURE
+  GCP
+  ORACLE
+  ALIBABA
+}
+
+enum OperatingSystemType {
+  WINDOWS
+  LINUX
+  MACOS
+  UNIX
+  NETWORK_DEVICE
+  OTHER
+}
+
+# ---------------------------------------------------------------------------
+# Asset Management Types
+# ---------------------------------------------------------------------------
+
+type Asset {
+  id: ID!
+  assetId: String!
+  name: String
+  ip: String
+  ipv6: String
+  dnsName: String
+  netbiosName: String
+  os: String
+  operatingSystem: OperatingSystem
+  assetType: String
+  tags: [AssetTag]
+  assetGroups: [AssetGroup]
+  details: AssetDetails
+  lastSeen: DateTime
+  firstSeen: DateTime
+  trackingMethod: String
+  cloudAgent: CloudAgent
+}
+
+type AssetDetails {
+  assetId: ID!
+  hostId: String
+  uuid: String
+  qwebHostId: String
+  lastVulnScan: DateTime
+  lastComplianceScan: DateTime
+  lastSystemBoot: DateTime
+  totalVulnerabilities: Int
+  criticalVulnerabilities: Int
+  networkInterfaces: [NetworkInterface]
+  software: [Software]
+  ports: [Port]
+  services: [Service]
+  vulnerabilities: [Vulnerability]
+}
+
+type AssetTag {
+  id: ID!
+  name: String!
+  color: String
+  ruleType: String
+  ruleText: String
+  criticality: Int
+  provider: String
+  created: DateTime
+  modified: DateTime
+}
+
+type AssetGroup {
+  id: ID!
+  name: String!
+  title: String
+  networkId: String
+  ipSet: [IPAddress]
+  ipRanges: [IPRange]
+  dnsSet: [String]
+  netbiosSet: [String]
+  assetTagIds: [String]
+  defaultScanner: Scanner
+  scannerIds: [String]
+  unit: String
+  division: String
+  function: String
+  location: String
+  comments: String
+  owner: APIUser
+  members: [Asset]
+}
+
+type IPAddress {
+  address: String!
+  version: Int
+  hostname: String
+  dnsNames: [String]
+}
+
+type IPRange {
+  from: String!
+  to: String!
+  networkId: String
+}
+
+type HostDetails {
+  hostId: ID!
+  ip: String
+  ipv6: String
+  trackingMethod: String
+  os: OperatingSystem
+  dnsName: String
+  netbiosName: String
+  operatingSystemCpe: String
+  qwebHostId: String
+  lastVMAuthScannedDate: DateTime
+  lastVMScanDate: DateTime
+  lastComplianceScanDate: DateTime
+  lastPCScanDate: DateTime
+  owner: String
+  comments: String
+  userDef: JSON
+  asset: Asset
+}
+
+type NetworkInterface {
+  interfaceId: ID!
+  hostname: String
+  address: String
+  ipv6: String
+  macAddress: String
+  gatewayAddress: String
+  interfaceType: String
+  interfaceName: String
+}
+
+type OperatingSystem {
+  name: String!
+  version: String
+  cpe: String
+  category: OperatingSystemType
+  lifecycle: String
+  endOfLifeDate: DateTime
+}
+
+type Software {
+  name: String!
+  version: String
+  vendor: String
+  installedDate: DateTime
+  cpe: String
+  lastFound: DateTime
+}
+
+type Port {
+  number: Int!
+  protocol: String
+  status: String
+  serviceDetected: String
+  lastFound: DateTime
+}
+
+type Service {
+  name: String!
+  port: Int
+  protocol: String
+  status: String
+  version: String
+  lastFound: DateTime
+}
+
+# ---------------------------------------------------------------------------
+# Scan Types
+# ---------------------------------------------------------------------------
+
+type ScanTarget {
+  ips: [String]
+  ipRanges: [IPRange]
+  assetGroupIds: [String]
+  assetTagIds: [String]
+  networkId: String
+  excludeIps: [String]
+}
+
+type Scanner {
+  id: ID!
+  name: String!
+  scannerType: ScannerTypeEnum
+  status: String
+  version: String
+  platform: String
+  networkId: String
+  proxyHost: String
+  proxyPort: Int
+  scannerGroup: String
+  lastActivity: DateTime
+  createdDate: DateTime
+}
+
+type ScannerType {
+  id: ID!
+  name: String!
+  category: String
+  description: String
+}
+
+type Scan {
+  id: ID!
+  ref: String
+  title: String!
+  scanType: ScanTypeEnum
+  status: ScanStatus
+  target: ScanTarget
+  scanner: Scanner
+  launchDate: DateTime
+  endDate: DateTime
+  duration: String
+  optionProfile: String
+  priority: Int
+  createdBy: APIUser
+}
+
+type ScanDetails {
+  scanId: ID!
+  title: String
+  ref: String
+  scanType: ScanTypeEnum
+  status: ScanStatus
+  target: ScanTarget
+  scanner: Scanner
+  optionProfile: String
+  priorityLevel: Int
+  launchDate: DateTime
+  endDate: DateTime
+  duration: String
+  processedHosts: Int
+  totalHosts: Int
+  patchedHosts: Int
+  errorHosts: Int
+  results: ScanResults
+}
+
+type ScanStatus {
+  state: ScanStatusEnum!
+  subState: String
+  lastUpdate: DateTime
+}
+
+type ScanResults {
+  scanId: ID!
+  hostList: [HostDetails]
+  errorList: [String]
+  suppressionList: [String]
+  vulnerabilities: [Vulnerability]
+  totalVulnerabilities: Int
+  patchedVulnerabilities: Int
+  activeVulnerabilities: Int
+  newVulnerabilities: Int
+  reOpenedVulnerabilities: Int
+}
+
+type ScanSchedule {
+  id: ID!
+  title: String
+  active: Boolean
+  scheduleType: String
+  frequency: String
+  daysOfWeek: [String]
+  startDate: DateTime
+  endDate: DateTime
+  startHour: Int
+  startMinute: Int
+  timeZone: String
+  optionProfileId: String
+  target: ScanTarget
+  scannerIds: [String]
+}
+
+# ---------------------------------------------------------------------------
+# Vulnerability Knowledge Base Types
+# ---------------------------------------------------------------------------
+
+type Vulnerability {
+  id: ID!
+  qid: Int!
+  title: String!
+  severity: SeverityLevel
+  vulnType: String
+  category: String
+  cveIds: [String]
+  cves: [CVE]
+  cvss: CVSS
+  pciFlag: Boolean
+  patchAvailable: Boolean
+  exploitAvailable: Boolean
+  bugtraqIds: [String]
+  publishedDate: DateTime
+  modifiedDate: DateTime
+  details: VulnDetails
+  remediation: Remediation
+  threat: Threat
+  exploits: [Exploit]
+}
+
+type VulnDetails {
+  qid: Int!
+  title: String
+  category: String
+  diagnosis: String
+  consequence: String
+  solution: String
+  vendorReference: [String]
+  softwareList: [Software]
+  changeLogComment: String
+  lastUpdate: DateTime
+}
+
+type CVE {
+  id: ID!
+  cveId: String!
+  title: String
+  description: String
+  cvss: CVSS
+  publishedDate: DateTime
+  modifiedDate: DateTime
+  references: [String]
+}
+
+type CVSS {
+  version: String!
+  baseScore: Float
+  temporalScore: Float
+  environmentalScore: Float
+  vector: String
+  access: String
+  complexity: String
+  authentication: String
+  confidentiality: String
+  integrity: String
+  availability: String
+}
+
+type KnowledgeBase {
+  lastUpdated: DateTime
+  totalVulnerabilities: Int
+  vulnerabilities: [Vulnerability]
+}
+
+type QID {
+  qid: Int!
+  title: String!
+  type: String
+  category: String
+  severity: SeverityLevel
+  pciFlag: Boolean
+  cveList: [String]
+  cvss: CVSS
+  lastUpdated: DateTime
+}
+
+type Risk {
+  riskScore: Float
+  riskLevel: RiskLevel
+  rtsi: Float
+  assetCriticality: Int
+  threatIntelligence: JSON
+  vulnerabilityDetails: [Vulnerability]
+}
+
+type Severity {
+  level: SeverityLevel!
+  numericLevel: Int!
+  description: String
+}
+
+type Threat {
+  threatName: String
+  description: String
+  lastActivity: DateTime
+  isActiveThreat: Boolean
+  referenceSources: [String]
+}
+
+type Exploit {
+  exploitName: String
+  description: String
+  link: String
+  exploitType: String
+  payload: String
+  resultsInPrivEsc: Boolean
+}
+
+type Remediation {
+  qid: Int
+  summary: String
+  solution: String
+  patchLinks: [String]
+  remediationPriority: Int
+  estimatedEffort: String
+  assignedTo: APIUser
+  status: String
+  dueDate: DateTime
+}
+
+# ---------------------------------------------------------------------------
+# Policy Compliance Types
+# ---------------------------------------------------------------------------
+
+type Compliance {
+  controlId: ID!
+  hostId: String
+  status: ComplianceStatusEnum
+  lastEvaluated: DateTime
+  controls: [Control]
+  report: ComplianceReport
+}
+
+type Control {
+  id: ID!
+  controlId: String!
+  title: String!
+  description: String
+  rationale: String
+  testProcedure: String
+  remediationSteps: String
+  evidenceRequired: String
+  framework: Framework
+  criticality: SeverityLevel
+  pciFlag: Boolean
+  hipaaFlag: Boolean
+  soxFlag: Boolean
+  cis: Boolean
+}
+
+type Framework {
+  id: ID!
+  name: String!
+  title: String
+  version: String
+  authority: String
+  description: String
+  controls: [Control]
+  policies: [Policy]
+}
+
+type ComplianceReport {
+  reportId: ID!
+  title: String
+  reportDate: DateTime
+  status: ComplianceStatusEnum
+  hostCount: Int
+  passedCount: Int
+  failedCount: Int
+  errorCount: Int
+  exceptionCount: Int
+  framework: Framework
+  policies: [Policy]
+}
+
+type ComplianceScan {
+  id: ID!
+  title: String
+  scanType: String
+  status: ScanStatus
+  target: ScanTarget
+  policyIds: [String]
+  launchDate: DateTime
+  endDate: DateTime
+  results: ComplianceReport
+}
+
+type Policy {
+  id: ID!
+  title: String!
+  description: String
+  groupId: String
+  isDefault: Boolean
+  framework: Framework
+  rules: [PolicyRule]
+  createdDate: DateTime
+  modifiedDate: DateTime
+  createdBy: APIUser
+}
+
+type PolicyRule {
+  id: ID!
+  policyId: String!
+  control: Control
+  expectation: String
+  criticality: SeverityLevel
+  exception: Boolean
+  exceptionReason: String
+  expirationDate: DateTime
+}
+
+type PolicyCompliance {
+  hostId: String
+  policyId: String
+  status: ComplianceStatusEnum
+  lastEvaluated: DateTime
+  passedRules: Int
+  failedRules: Int
+  errorRules: Int
+  exceptionRules: Int
+  rules: [PolicyRule]
+}
+
+# ---------------------------------------------------------------------------
+# Web Application Scanning Types
+# ---------------------------------------------------------------------------
+
+type WAS {
+  webAppCount: Int
+  lastUpdated: DateTime
+  webApps: [WebApp]
+}
+
+type WebApp {
+  id: ID!
+  name: String!
+  url: String!
+  description: String
+  owner: APIUser
+  tags: [AssetTag]
+  authRecord: JSON
+  dnsOverrides: [String]
+  swapResponseCodes: [String]
+  postDataBlacklist: [String]
+  isScheduled: Boolean
+  lastScanDate: DateTime
+  lastScanStatus: String
+  scans: [WebAppScan]
+  createdDate: DateTime
+  modifiedDate: DateTime
+}
+
+type WebAppScan {
+  id: ID!
+  name: String
+  webApp: WebApp
+  scanType: String
+  optionProfile: String
+  status: ScanStatus
+  launchDate: DateTime
+  endDate: DateTime
+  findings: WASFindings
+  scanner: Scanner
+}
+
+type WebAppVuln {
+  id: ID!
+  name: String!
+  qid: Int
+  url: String
+  type: String
+  severity: SeverityLevel
+  status: String
+  firstFound: DateTime
+  lastFound: DateTime
+  timesFound: Int
+  cvss: CVSS
+  cves: [CVE]
+  param: String
+  payload: String
+  response: String
+  webApp: WebApp
+}
+
+type WASFindings {
+  scanId: ID!
+  totalVulnerabilities: Int
+  criticalCount: Int
+  highCount: Int
+  mediumCount: Int
+  lowCount: Int
+  informationalCount: Int
+  vulnerabilities: [WebAppVuln]
+}
+
+# ---------------------------------------------------------------------------
+# Container Security Types
+# ---------------------------------------------------------------------------
+
+type ContainerSecurity {
+  totalContainers: Int
+  totalImages: Int
+  totalRegistries: Int
+  containers: [Container]
+  images: [ContainerImage]
+  registries: [ContainerRegistry]
+}
+
+type Container {
+  id: ID!
+  containerId: String!
+  name: String
+  state: ContainerStatusEnum
+  image: ContainerImage
+  host: Asset
+  created: DateTime
+  lastUpdated: DateTime
+  ipAddress: String
+  macAddress: String
+  portMappings: [Port]
+  environmentVars: JSON
+  labels: JSON
+  vulnerabilities: [Vulnerability]
+  criticalVulnCount: Int
+  highVulnCount: Int
+}
+
+type ContainerImage {
+  id: ID!
+  imageId: String!
+  sha: String
+  repositoryName: String
+  tag: String
+  registry: ContainerRegistry
+  os: OperatingSystem
+  size: Int
+  created: DateTime
+  lastUpdated: DateTime
+  softwareComponents: [Software]
+  vulnerabilities: [Vulnerability]
+  criticalVulnCount: Int
+  highVulnCount: Int
+}
+
+type ContainerRegistry {
+  id: ID!
+  name: String!
+  uri: String!
+  type: String
+  connectorUuid: String
+  lastSync: DateTime
+  images: [ContainerImage]
+  totalImages: Int
+  credentials: JSON
+}
+
+# ---------------------------------------------------------------------------
+# Certificate View Types
+# ---------------------------------------------------------------------------
+
+type CertificateView {
+  totalCertificates: Int
+  expiringWithin30Days: Int
+  expiredCertificates: Int
+  certificates: [Certificate]
+}
+
+type Certificate {
+  id: ID!
+  certId: String!
+  commonName: String!
+  subjectAltNames: [String]
+  status: CertificateStatusEnum
+  issuer: String
+  validFrom: DateTime
+  validTo: DateTime
+  serialNumber: String
+  fingerprint: String
+  signatureAlgorithm: String
+  keyAlgorithm: String
+  keySize: Int
+  internalCA: InternalCA
+  externalCA: ExternalCA
+  hosts: [Asset]
+  firstFound: DateTime
+  lastFound: DateTime
+}
+
+type InternalCA {
+  id: ID!
+  name: String!
+  commonName: String
+  issuer: String
+  validFrom: DateTime
+  validTo: DateTime
+  keyAlgorithm: String
+  keySize: Int
+  certificates: [Certificate]
+}
+
+type ExternalCA {
+  id: ID!
+  name: String!
+  commonName: String
+  issuer: String
+  organization: String
+  validFrom: DateTime
+  validTo: DateTime
+  certificates: [Certificate]
+}
+
+# ---------------------------------------------------------------------------
+# Cloud Agent Types
+# ---------------------------------------------------------------------------
+
+type CloudAgent {
+  id: ID!
+  agentId: String!
+  name: String
+  asset: Asset
+  status: AgentStatusEnum
+  version: String
+  platform: Platform
+  configProfile: String
+  lastActivity: DateTime
+  activationKey: String
+  details: AgentDetails
+}
+
+type AgentDetails {
+  agentId: ID!
+  hostId: String
+  uuid: String
+  agentVersion: String
+  platform: Platform
+  lastActivity: DateTime
+  lastCheckedIn: DateTime
+  lastVulnScan: DateTime
+  lastComplianceScan: DateTime
+  activationKey: String
+  configProfile: String
+  status: AgentStatusEnum
+  activatedModules: [String]
+}
+
+type Platform {
+  name: String!
+  version: String
+  architecture: String
+  osType: OperatingSystemType
+}
+
+# ---------------------------------------------------------------------------
+# Cloud Security Posture Management (CSPM) Types
+# ---------------------------------------------------------------------------
+
+type CSPM {
+  totalCloudAccounts: Int
+  totalFindings: Int
+  criticalFindings: Int
+  cloudAccounts: [CloudAccount]
+}
+
+type CloudAccount {
+  id: ID!
+  accountId: String!
+  name: String
+  provider: CloudProviderEnum
+  status: String
+  subscriptionId: String
+  tenantId: String
+  connectorId: String
+  connectorName: String
+  lastSync: DateTime
+  totalResources: Int
+  failedControls: Int
+  passedControls: Int
+  findings: [Compliance]
+}
+
+# ---------------------------------------------------------------------------
+# Access Control & Platform Types
+# ---------------------------------------------------------------------------
+
+type APIUser {
+  id: ID!
+  login: String!
+  firstName: String
+  lastName: String
+  email: String
+  title: String
+  phone: String
+  address: String
+  city: String
+  country: String
+  state: String
+  zip: String
+  userRole: String
+  businessUnit: String
+  created: DateTime
+  lastLogin: DateTime
+  active: Boolean
+  apiKeys: [APIKey]
+}
+
+type APIKey {
+  id: ID!
+  keyId: String!
+  label: String
+  permissions: [String]
+  created: DateTime
+  expires: DateTime
+  active: Boolean
+  owner: APIUser
+}
+
+type Token {
+  tokenValue: String!
+  tokenType: String
+  expiresIn: Int
+  issuedAt: DateTime
+  scope: [String]
+}
+
+type Webhook {
+  id: ID!
+  name: String!
+  url: String!
+  secret: String
+  active: Boolean
+  events: [String]
+  headers: JSON
+  created: DateTime
+  modified: DateTime
+  lastTriggered: DateTime
+}
+
+# ---------------------------------------------------------------------------
+# Root Query Type
+# ---------------------------------------------------------------------------
+
+type Query {
+  # Asset queries
+  asset(id: ID!): Asset
+  assets(tags: [String], assetGroupId: String, ip: String, limit: Int, offset: Int): [Asset]
+  assetGroup(id: ID!): AssetGroup
+  assetGroups(limit: Int, offset: Int): [AssetGroup]
+  assetTag(id: ID!): AssetTag
+  assetTags(limit: Int, offset: Int): [AssetTag]
+
+  # Scan queries
+  scan(id: ID!): Scan
+  scans(status: ScanStatusEnum, scanType: ScanTypeEnum, limit: Int, offset: Int): [Scan]
+  scanDetails(id: ID!): ScanDetails
+  scanSchedule(id: ID!): ScanSchedule
+  scanSchedules(active: Boolean, limit: Int, offset: Int): [ScanSchedule]
+  scanner(id: ID!): Scanner
+  scanners(limit: Int, offset: Int): [Scanner]
+
+  # Vulnerability queries
+  vulnerability(qid: Int!): Vulnerability
+  vulnerabilities(severity: SeverityLevel, pciFlag: Boolean, limit: Int, offset: Int): [Vulnerability]
+  knowledgeBase(modifiedAfter: DateTime, limit: Int, offset: Int): KnowledgeBase
+  qid(qid: Int!): QID
+
+  # Compliance queries
+  policy(id: ID!): Policy
+  policies(limit: Int, offset: Int): [Policy]
+  framework(id: ID!): Framework
+  frameworks(limit: Int, offset: Int): [Framework]
+  control(id: ID!): Control
+  controls(frameworkId: String, limit: Int, offset: Int): [Control]
+  complianceScan(id: ID!): ComplianceScan
+  complianceScans(status: ScanStatusEnum, limit: Int, offset: Int): [ComplianceScan]
+  complianceReport(reportId: ID!): ComplianceReport
+  policyCompliance(hostId: String!, policyId: String): PolicyCompliance
+
+  # Web Application Scanning queries
+  webApp(id: ID!): WebApp
+  webApps(tags: [String], limit: Int, offset: Int): [WAS]
+  webAppScan(id: ID!): WebAppScan
+  webAppScans(status: ScanStatusEnum, webAppId: String, limit: Int, offset: Int): [WebAppScan]
+  webAppVulnerability(id: ID!): WebAppVuln
+  wasFindings(scanId: ID!): WASFindings
+
+  # Container Security queries
+  container(id: ID!): Container
+  containers(state: ContainerStatusEnum, limit: Int, offset: Int): [Container]
+  containerImage(id: ID!): ContainerImage
+  containerImages(registry: String, limit: Int, offset: Int): [ContainerImage]
+  containerRegistry(id: ID!): ContainerRegistry
+  containerRegistries(limit: Int, offset: Int): [ContainerRegistry]
+
+  # Certificate View queries
+  certificate(id: ID!): Certificate
+  certificates(status: CertificateStatusEnum, limit: Int, offset: Int): [Certificate]
+  internalCA(id: ID!): InternalCA
+  internalCAs(limit: Int, offset: Int): [InternalCA]
+  externalCA(id: ID!): ExternalCA
+  externalCAs(limit: Int, offset: Int): [ExternalCA]
+
+  # Cloud Agent queries
+  cloudAgent(id: ID!): CloudAgent
+  cloudAgents(status: AgentStatusEnum, limit: Int, offset: Int): [CloudAgent]
+
+  # CSPM queries
+  cloudAccount(id: ID!): CloudAccount
+  cloudAccounts(provider: CloudProviderEnum, limit: Int, offset: Int): [CloudAccount]
+
+  # Access control queries
+  apiUser(id: ID!): APIUser
+  apiUsers(limit: Int, offset: Int): [APIUser]
+  webhook(id: ID!): Webhook
+  webhooks(limit: Int, offset: Int): [Webhook]
+}
+
+# ---------------------------------------------------------------------------
+# Root Mutation Type
+# ---------------------------------------------------------------------------
+
+type Mutation {
+  # Scan mutations
+  launchScan(title: String!, scanType: ScanTypeEnum!, target: JSON!, optionProfileId: String, scannerId: String): Scan
+  pauseScan(id: ID!): Scan
+  resumeScan(id: ID!): Scan
+  cancelScan(id: ID!): Scan
+  deleteScan(id: ID!): Boolean
+  createScanSchedule(title: String!, target: JSON!, scheduleConfig: JSON!, optionProfileId: String): ScanSchedule
+  updateScanSchedule(id: ID!, active: Boolean, scheduleConfig: JSON): ScanSchedule
+  deleteScanSchedule(id: ID!): Boolean
+
+  # Asset mutations
+  addAssetTag(assetId: ID!, tagId: ID!): Asset
+  removeAssetTag(assetId: ID!, tagId: ID!): Asset
+  createAssetGroup(name: String!, ips: [String], ipRanges: [JSON]): AssetGroup
+  updateAssetGroup(id: ID!, name: String, ips: [String]): AssetGroup
+  deleteAssetGroup(id: ID!): Boolean
+
+  # Compliance mutations
+  createPolicy(title: String!, frameworkId: String, rules: [JSON]): Policy
+  updatePolicy(id: ID!, title: String, rules: [JSON]): Policy
+  deletePolicy(id: ID!): Boolean
+  launchComplianceScan(title: String!, target: JSON!, policyIds: [String]): ComplianceScan
+
+  # WAS mutations
+  createWebApp(name: String!, url: String!, description: String): WebApp
+  updateWebApp(id: ID!, name: String, url: String): WebApp
+  deleteWebApp(id: ID!): Boolean
+  launchWebAppScan(webAppId: ID!, scanType: String!, optionProfileId: String): WebAppScan
+
+  # Webhook mutations
+  createWebhook(name: String!, url: String!, events: [String]!): Webhook
+  updateWebhook(id: ID!, active: Boolean, events: [String]): Webhook
+  deleteWebhook(id: ID!): Boolean
+
+  # Auth mutations
+  createToken(username: String!, password: String!): Token
+}
