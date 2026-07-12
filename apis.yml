@@ -61,6 +61,8 @@ apis:
   - type: Documentation
     url: https://docs.qualys.com/en/vmdr-ot/api/vmdrot_api/ch01/get_started.htm
 common:
+- type: DomainSecurity
+  url: security/qualys-domain-security.yml
 - type: GitHubOrganization
   url: https://github.com/qualys
 - type: LinkedIn
@@ -81,6 +83,8 @@ common:
   url: https://www.qualys.com/support/
 - type: StatusPage
   url: https://status.qualys.com
+- url: https://blog.qualys.com/feed
+  type: Blog
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
