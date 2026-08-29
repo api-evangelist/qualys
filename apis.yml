@@ -8,6 +8,17 @@ description: Qualys is a cloud-based security and compliance platform offering V
   reports, and findings. Authentication supports HTTP Basic auth and JWT bearer tokens
   via the Qualys Authentication API.
 type: Index
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: false
+  label: Hosted service · you call their endpoint
+  confidence: medium
+  source:
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: unknown
   onboarding: unknown
