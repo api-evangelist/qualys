@@ -65,8 +65,6 @@ apis:
     url: https://cdn2.qualys.com/docs/qualys-api-vmpc-user-guide.pdf
   - type: Pod URLs
     url: https://www.qualys.com/platform-identification/
-  - url: graphql/qualys-graphql.md
-    type: GraphQL
 - aid: qualys:authentication-api
   name: Qualys Authentication API
   description: Authentication endpoint that issues JSON Web Tokens (JWT) used as Bearer
