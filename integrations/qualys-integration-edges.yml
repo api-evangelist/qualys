@@ -1,0 +1,58 @@
+generated: '2026-10-13'
+method: searched
+checked:
+- https://aws.amazon.com/marketplace/
+- https://azuremarketplace.microsoft.com/
+marketplace_apps: []
+edges:
+- partner_name: AWS Marketplace
+  partner: amazon-web-services
+  partner_match: aggregator
+  type: marketplace
+  marketplace: aws-marketplace
+  channel: distribution
+  relationship: platform-app
+  direction: provider-built
+  evidence: https://aws.amazon.com/marketplace/seller-profile?id=37404678-bda2-44f4-8311-910ccefa1f8f
+  listing_count: 4
+  apps:
+  - Qualys VMDR (US Only)
+  - Qualys TotalCloud
+  - Qualys VMDR ProtectIT (US Only)
+  - Qualys VMDR FixIT (US Only)
+  seller_name: Qualys
+  detected_by: sweep-cloud-marketplaces.py
+  detected: '2026-10-13'
+- partner_name: Microsoft Azure Marketplace
+  partner: microsoft-azure
+  partner_match: aggregator
+  type: marketplace
+  marketplace: azure-marketplace
+  channel: distribution
+  relationship: platform-app
+  direction: provider-built
+  evidence: https://azuremarketplace.microsoft.com/en-us/marketplace/apps?search=Qualys%20Inc.
+  listing_count: 2
+  apps:
+  - Qualys Cloud Agent for Linux
+  - Qualys Cloud Agent for Windows
+  seller_name: Qualys Inc.
+  detected_by: sweep-cloud-marketplaces.py
+  detected: '2026-10-13'
+- partner_name: Microsoft Azure Marketplace
+  partner: microsoft-azure
+  partner_match: aggregator
+  type: marketplace
+  marketplace: azure-marketplace
+  channel: distribution
+  relationship: platform-app
+  direction: provider-built
+  evidence: https://azuremarketplace.microsoft.com/en-us/marketplace/apps?search=Qualys%2C%20Inc.
+  listing_count: 3
+  apps:
+  - Qualys Gateway Service Appliance
+  - Qualys Virtual Firewall Appliance
+  - Qualys Virtual Scanner Appliance
+  seller_name: Qualys, Inc.
+  detected_by: sweep-cloud-marketplaces.py
+  detected: '2026-10-13'
