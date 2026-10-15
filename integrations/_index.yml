@@ -39,3 +39,45 @@
   relationship: platform-app
   status: not-a-workflow
   arazzo: null
+- slug: qualys-fedramp
+  label: FedRAMP
+  partner_name: FedRAMP
+  category: FedRAMP authorization
+  type: contract
+  channel: regulator-register
+  evidence: https://marketplace.fedramp.gov/products/F1508207205
+  source: edge
+  relationship: standard-participant
+  contract_reference:
+    register: FedRAMP Marketplace data (github.com/18F/fedramp-data data/data.json @4b73d9247f)
+    standard: FedRAMP
+    spec_file: null
+    role: fedramp-authorized
+    registered_name: Qualys, Inc.
+    register_id: F1508207205
+    matched_domain: qualys.com
+    matched_by: domain
+    domain_source: website
+    designations:
+    - Compliant
+    - FedRAMP Ready
+    packages:
+    - Qualys Cloud Platform
+    - Qualys Government Platform
+    service_models:
+    - SaaS
+    paths:
+    - Agency
+    - None
+    signal_note: certified_products = one entry per AUTHORIZED impact level, never per package; packages, service
+      models, paths and leveraging agencies are context, never counted. The register lists current designations
+      only (revoked / expired are removed), so lapsed is always false
+    detected_by: sweep-gov-cloud.py
+    detected: '2026-10-15'
+    certified_products:
+    - product: FedRAMP Moderate
+      impact_level: Moderate
+      lapsed: false
+      latest_authorization: '2023-06-06'
+  status: not-a-workflow
+  arazzo: null
