@@ -12,6 +12,7 @@ checked:
 - https://cloudsecurityalliance.org/membership/current
 - https://fidoalliance.org/certification/fido-certified-products/
 - https://www.cisa.gov/securebydesign/pledge/secure-design-pledge-signers
+- docker-hub/integrations/docker-hub-integration-edges.yml
 marketplace_apps: []
 edges:
 - partner_name: Atlassian Marketplace
@@ -184,5 +185,34 @@ edges:
     identity_source: wikidata P856 (labelled provenance step; Kin 2026-10-15 decision 1)
   detected_by: sweep-cloud-security-star.py
   first_seen: '2026-10-20'
+- partner_name: Docker Hub (docker-verified-publisher)
+  partner: docker-hub
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: docker-verified-publisher
+  evidence: https://hub.docker.com/u/qualys
+  mirror_of: docker-hub/integrations/docker-hub-integration-edges.yml
+  apps:
+  - qualys/qcs-sensor
+  - qualys/cluster-sensor
+  - qualys/runtime-sensor
+  - qualys/fim
+  - qualys/jira-client-for-jira-integration
+  - qualys/qualys-client-for-jira-integration
+  - qualys/qiac_security_cli
+  - qualys/qagent-rhcos
+  - qualys/stc
+  - qualys/scanner-replacement-toolkit
+  - qualys/cloud-agent-container-x64
+  listing_count: 1
+  detected: '2026-10-20'
+  detected_by: mirror-platform-listings.py
+  category: Docker Verified Publisher
+  badges:
+  - Docker Verified Publisher
 source:
 - https://marketplace.atlassian.com/
