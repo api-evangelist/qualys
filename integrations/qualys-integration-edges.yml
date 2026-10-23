@@ -69,9 +69,9 @@ edges:
     paths:
     - Agency
     - None
-    signal_note: certified_products = one entry per AUTHORIZED impact level, never per package; packages, service models,
-      paths and leveraging agencies are context, never counted. The register lists current designations only (revoked / expired
-      are removed), so lapsed is always false
+    signal_note: certified_products = one entry per AUTHORIZED impact level, never per package; packages, service
+      models, paths and leveraging agencies are context, never counted. The register lists current designations
+      only (revoked / expired are removed), so lapsed is always false
     detected_by: sweep-gov-cloud.py
     detected: '2026-10-15'
     certified_products:
@@ -159,9 +159,9 @@ edges:
     - product: STAR Certification
       lapsed: false
       latest: '2026-04-08'
-    signal_note: STAR Level 1 (CAIQ self-assessment) = participation; certified_products = one entry per STAR Level 2 / STAR
-      for AI Level 2 assessment TYPE (third-party certification, attestation, C-STAR, ValidAIted); lapsed = every instance
-      marked (Deprecated) by the registry; service counts never recorded
+    signal_note: STAR Level 1 (CAIQ self-assessment) = participation; certified_products = one entry per STAR Level
+      2 / STAR for AI Level 2 assessment TYPE (third-party certification, attestation, C-STAR, ValidAIted); lapsed
+      = every instance marked (Deprecated) by the registry; service counts never recorded
     detected_by: sweep-compliance-assurance.py
     detected: '2026-10-20'
   detected_by: sweep-compliance-assurance.py
@@ -177,15 +177,15 @@ edges:
   category: secure-by-design software pledge
   contract_reference:
     register: CISA Secure by Design Pledge signers (cisa.gov/securebydesign/pledge)
-    standard: 'CISA Secure by Design Pledge (seven goals: MFA, default passwords, vulnerability classes, patches, disclosure
-      policy, CVEs, evidence of intrusions)'
+    standard: 'CISA Secure by Design Pledge (seven goals: MFA, default passwords, vulnerability classes, patches,
+      disclosure policy, CVEs, evidence of intrusions)'
     spec_file: null
     role: secure-by-design-pledge-signer
     registered_name: Qualys
     matched_domain: qualys.com
     matched_by: domain
-    signal_note: 'participation only: a voluntary public pledge listed by CISA; not an audit or conformance result (no certified_products,
-      no tier)'
+    signal_note: 'participation only: a voluntary public pledge listed by CISA; not an audit or conformance result
+      (no certified_products, no tier)'
     detected_by: sweep-cloud-security-star.py
     detected: '2026-10-20'
     identity: wikidata Q7268802 'Qualys' P856 https://www.qualys.com/
@@ -253,8 +253,8 @@ edges:
     disclosure_policy:
     - https://www.qualys.com/docs/responsible-disclosure-policy.pdf
     country: USA
-    signal_note: listing as a CVE Numbering Authority = participation (a public commitment to assign CVE IDs and publish advisories
-      for its scope); never a count of CVEs
+    signal_note: listing as a CVE Numbering Authority = participation (a public commitment to assign CVE IDs and
+      publish advisories for its scope); never a count of CVEs
     detected_by: sweep-vulnerability-disclosure-cna.py
     detected: '2026-10-22'
   detected_by: sweep-vulnerability-disclosure-cna.py
@@ -278,10 +278,55 @@ edges:
   - Qualys IaC Security (qualys-iac-security)
   listing_count: 5
   category: Jenkins plugin
-  signal_note: 'publisher side of the all/jenkins listing; vendor-control: qualys-was: maintainer account ''qualys'' is the
-    GitHub organization on all/qualys''s apis.yml; qualys-cs: maintainer account ''qualys'' is the GitHub organization on
-    all/qualys''s apis.yml; qualys-vm: maintainer account ''qualys'' is the GitHub organization on all/qualys''s apis.yml'
+  signal_note: 'publisher side of the all/jenkins listing; vendor-control: qualys-was: maintainer account ''qualys''
+    is the GitHub organization on all/qualys''s apis.yml; qualys-cs: maintainer account ''qualys'' is the GitHub
+    organization on all/qualys''s apis.yml; qualys-vm: maintainer account ''qualys'' is the GitHub organization
+    on all/qualys''s apis.yml'
   detected: '2026-10-22'
   detected_by: sweep-jenkins-cd-foundation-plugins.py
+- partner_name: TX-RAMP
+  partner: null
+  partner_match: register
+  partner_tier: Level 2
+  type: contract
+  channel: regulator-register
+  relationship: standard-participant
+  direction: partner-built
+  evidence: https://dir.texas.gov/resource-library-item/tx-ramp-certified-cloud-products
+  category: Texas state cloud security certification (TX-RAMP)
+  contract_reference:
+    register: TX-RAMP Certified Cloud Products (Texas DIR)
+    standard: TX-RAMP
+    spec_file: null
+    role: tx-ramp-certified
+    register_file: https://dir.texas.gov/sites/default/files/2026-10/Copy%20of%20TX-RAMP%20Certified%20Cloud%20Products_1.xlsx
+    registrations:
+    - certification_id: TX985534
+      product: Qualys Cloud Platform
+      registered_vendor: Qualys
+      certification_level: Level 2
+      cloud_categories:
+      - SaaS
+      certification_path: Certification Due to Existing Other RAMP-Certification
+      expires: null
+      lapsed: false
+      matched_domain: qualys.com
+      matched_by: domain
+    identity: wikidata Q7268802 'Qualys' P856 https://www.qualys.com/
+    identity_source: wikidata P856 (labelled provenance step; Kin 2026-10-15 decision 1)
+    signal_note: 'certified_products = one entry per cloud category (SaaS / PaaS / IaaS) the vendor holds a TX-RAMP
+      certification in, never per product; products are context, never counted. certification_level = the highest
+      level in that category; lapsed: true when every product in the category is past its expiry date. partner_tier
+      = the highest CURRENT level'
+    certified_products:
+    - product: SaaS
+      product_type: SaaS
+      standard: TX-RAMP
+      certification_level: Level 2
+      lapsed: false
+    detected_by: sweep-tx-ramp-certified-cloud.py
+    detected: '2026-10-22'
+  detected_by: sweep-tx-ramp-certified-cloud.py
+  first_seen: '2026-10-22'
 source:
 - https://marketplace.atlassian.com/
