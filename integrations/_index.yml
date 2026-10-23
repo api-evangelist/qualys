@@ -192,3 +192,16 @@
     detected: '2026-10-22'
   status: not-a-workflow
   arazzo: null
+- slug: qualys-jenkins-own
+  label: Jenkins (own)
+  partner: jenkins
+  partner_name: Jenkins (own)
+  category: Jenkins plugin
+  type: marketplace
+  marketplace: own
+  channel: partner-built
+  evidence: https://plugins.jenkins.io/qualys-was/
+  source: edge
+  relationship: platform-app
+  status: not-a-workflow
+  arazzo: null
